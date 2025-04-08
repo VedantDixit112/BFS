@@ -1,0 +1,83 @@
+class Solution {
+    public int orangesRotting(int[][] arr) {
+        Map<Integer,String>map=new HashMap<>();
+        Map<String,Integer>map1=new HashMap<>();
+        int count=3;
+        Set<Integer>set=new HashSet<>();
+        Queue<Integer>q=new LinkedList<>();
+        boolean [][]vis=new boolean[arr.length][arr[0].length];
+        int sum=0;
+        int one=0;
+        int zero=0;
+        for(int i=0;i<arr.length;i++){
+            for(int j=0;j<arr[i].length;j++){
+                StringBuilder sb=new StringBuilder();
+                if(arr[i][j]==2){
+                    q.add(count);
+                    set.add(count);
+                    sum++;
+                    one++;
+                }
+                if(arr[i][j]==1){
+                    sum++;
+                    zero++;
+                }
+                sb.append(i);
+                sb.append(j);
+                map.put(count,sb.toString());
+                map1.put(sb.toString(),count++);
+            }
+        }
+        if(zero==0 && one>0 ||one==0 && zero==0){
+            return 0;
+        }
+        int step=1;
+        while(!q.isEmpty()){
+            int size=q.size();
+            for(int i=0;i<size;i++){
+                int val=q.poll();
+                String b=map.get(val);
+                int l=Character.getNumericValue(b.charAt(0));
+                int m=Character.getNumericValue(b.charAt(1));
+                vis[l][m]=true;
+                if(l-1>=0 && !vis[l-1][m] && arr[l-1][m]==1){
+                    StringBuilder sb=new StringBuilder();
+                    sb.append(l-1);
+                    sb.append(m);
+                    int t=map1.get(sb.toString());
+                    set.add(t);
+                    q.add(t);
+                }
+                if(l+1<arr.length && !vis[l+1][m] && arr[l+1][m]==1){
+                    StringBuilder sb=new StringBuilder();
+                    sb.append(l+1);
+                    sb.append(m);
+                    int t=map1.get(sb.toString());
+                    set.add(t);
+                    q.add(t);
+                }
+                if(m-1>=0 && !vis[l][m-1] && arr[l][m-1]==1){
+                    StringBuilder sb=new StringBuilder();
+                    sb.append(l);
+                    sb.append(m-1);
+                    int t=map1.get(sb.toString());
+                    set.add(t);
+                    q.add(t);
+                }
+                if(m+1<arr[0].length && !vis[l][m+1] && arr[l][m+1]==1){
+                    StringBuilder sb=new StringBuilder();
+                    sb.append(l);
+                    sb.append(m+1);
+                    int t=map1.get(sb.toString());
+                    set.add(t);
+                    q.add(t);
+                }
+            }
+             if(set.size()==sum){
+                return step;
+            }
+            step++;
+        }
+        return -1;
+    }
+}
